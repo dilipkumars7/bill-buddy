@@ -4,10 +4,10 @@
 }
 .input {
   height: 47px;
-  font-size: 14px;
+  font-size: 15px;
   padding: 7px 15px;
   border-radius: 4px;
-  border: 2px solid #CBD8E3;
+  border: 2px solid #9AA6B2;
   width: 100%;
   outline: none;
   box-sizing: border-box;
@@ -27,7 +27,7 @@
 
 .input:not(:placeholder-shown).input:not(:focus) + .placeholder {
   transform: scale(.90) translateY(-24px) translateX(-2%);
-  color: #CBD8E3;
+  color: #3C3D37;
   transition: .2s ease;
 }
 

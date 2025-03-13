@@ -2,15 +2,21 @@
 import React from 'react'
 import './common.css'
 
-export default function SdkInput() {
-  return (
-    <>
+interface SdkInputProps {
+  type?: string;
+  label: string;
+  variant?: string;
+}
 
+export default function SdkInput({ type, label, variant }: SdkInputProps) {
+  if(variant === 'login'){
+    return (
       <div className="input-wrapper">
-        <input className="input" type="text" placeholder=" " data-placeholder="" required/>
-        <span className="placeholder">Email</span>
+        <input className="input" type={type} placeholder=" " data-placeholder="" required/>
+        <span className="placeholder">{label}</span>
+        {/* <div className='text-[#da2020] text-[12.5px] pl-1'>Error</div> */}
       </div>
-
-    </>
-  )
+    )
+  }
+  
 }
