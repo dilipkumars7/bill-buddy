@@ -135,3 +135,7 @@
   color: var(--ds-text-inverse, #FFFFFF) !important;
 }
 
+.button-65:disabled{
+  opacity: 0.5;
+  cursor: not-allowed;
+}

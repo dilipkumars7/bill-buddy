@@ -9,6 +9,9 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import SdkInput from "../../components/input";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const SKDsFontAp = localFont({ 
   src: '../../../public/fonts/apercu_regular_pro.otf',
@@ -19,6 +22,18 @@ const SKDsFontAp = localFont({
 //   src: '../../../public/fonts/Termina.otf',
 //   fallback:['sans-serif' ]
 // })
+
+const baseSchema = z.object({
+  email: z.string().min(1, "Email is required").email("Invalid email format"),
+  password: z.string().min(1, "Password is required"),
+});
+
+const schema = baseSchema.required({
+  email: true,
+  password: true,
+});
+
+type FormData = z.infer<typeof schema>;
 
 export default function Login() {
 
@@ -63,6 +78,27 @@ export default function Login() {
       progressContent.current.textContent = `${Math.ceil(time / 1000)}s`;
     }
   };
+
+  const { register, handleSubmit, formState: {errors, isValid} } = useForm<FormData>({
+    resolver: zodResolver(schema), 
+    mode: "onChange"
+  });
+
+  const onSubmit = (data: FormData) => {  
+    console.log("Form Submitted:", data);
+  };
+
+  const EmailIcon = (
+    <svg viewBox="0 0 24 24" fill="currentColor" width={20} height={20}>
+      <path d="M12 13.5l-8-6V6l8 6 8-6v1.5l-8 6z" />
+      <path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zm0 2v12h16V6H4z" />
+    </svg>
+  );
+  const PassIcon = (
+    <svg viewBox="0 0 24 24" fill="currentColor" width={20} height={20}>
+      <path fillRule="evenodd" d="M12 1.5a5.25 5.25 0 0 0-5.25 5.25v3a3 3 0 0 0-3 3v6.75a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3v-6.75a3 3 0 0 0-3-3v-3c0-2.9-2.35-5.25-5.25-5.25Zm3.75 8.25v-3a3.75 3.75 0 1 0-7.5 0v3h7.5Z" clipRule="evenodd" />
+    </svg>
+  )
 
 
   return (
@@ -137,10 +173,10 @@ export default function Login() {
         </div>
 
         <div className="h-full w-full flex items-center justify-center flex-col">
-          <form className={`${SKDsFontAp.className} w-[60%] flex items-center justify-center flex-col gap-5`}>
-            <SdkInput type="email" label="Email" variant="login"></SdkInput>
-            <SdkInput type="password" label="Password" variant="login"></SdkInput>
-            <button type="submit" className="button-65" role="button">Continue</button>
+          <form className={`${SKDsFontAp.className} w-[60%] flex items-center justify-center flex-col gap-10`} onSubmit={handleSubmit(onSubmit)}>
+            <SdkInput type="email" label="Email" variant="login" {...register("email")} error={errors.email?.message} icon={EmailIcon}></SdkInput>
+            <SdkInput type="password" label="Password" variant="login" {...register("password")} error={errors.password?.message} icon={PassIcon}></SdkInput>
+            <button type="submit" className={`button-65`}  role="button">Continue</button>
           </form>
         </div>
 
