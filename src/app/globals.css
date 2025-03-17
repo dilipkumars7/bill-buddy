@@ -1,3 +1,15 @@
 @import "tailwindcss";
 
 
+.hero_section{
+  position: relative;
+  height: auto;
+  top:57px;
+  left:60px;
+  bottom: 45px;
+  width: calc(100% - 61px);
+  transition: all .5s ease;
+  z-index: 2;
+  padding: 0.5rem;
+  overflow: hidden;
+}
