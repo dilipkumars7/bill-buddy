@@ -11,6 +11,12 @@
   --sdk-space-300: 1.5rem;
 }
 
+@font-face {
+  font-family: "LexEnd";
+  src: url('../../public/fonts/LexendDeca-VariableFont_wght.ttf') format('opentype');
+  font-display: swap;
+  font-weight: 400;
+}
 
 .nav-header{
   border-block-end: 1px solid var(--sdk-border, #EBECF0);
