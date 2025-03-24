@@ -1,73 +1,45 @@
 "use client";
-import React, { useEffect, useRef } from 'react';
-import { css } from '@emotion/react';
-import styled from '@emotion/styled';
-
-const Container = styled.div`
-  display: flex;
-  align-items: stretch;
-  height: 100vh;
-`;
-
-const ResizableDiv = styled.div`
-  background-color: #f0f0f0;
-  padding: 20px;
-  overflow: auto;
-  min-width: 100px;
-  max-width: 80%;
-  position: relative;
-`;
-
-const Resizer = styled.div`
-  width: 2px;
-  cursor: col-resize;
-  background-color: #ccc;
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  &:hover {
-    background-color: #999;
-  }
-`;
+import React, { useEffect, useRef, useState } from 'react';
+import SdkTable from '@/components/table';
+import { getData } from '@/lib/http';
+import { itemIcons, ItemsHeaderName } from "@/lib/itemIcons";
 
 export default function ItemPage() {
-  const resizableRef = useRef(null);
+  const [ItemData, setItemData] = useState<any[]>([]); // Ensure it's an array
+  const [HeaderFormat, setHeaderFormat] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!resizableRef.current) return;
-  }, []);
+    const fetchData = async () => {
+      try {
+        let paramData = { page: 1, limit: 10 };
+        const result = await getData("item", paramData);
+        setItemData(result.data || []); // Set data safely
 
-  const handleMouseDown = (event) => {
-    if (!resizableRef.current) return;
-    event.preventDefault();
-    const startX = event.clientX;
-    const startWidth = resizableRef.current.offsetWidth;
-
-    const onMouseMove = (moveEvent) => {
-      if (!resizableRef.current) return;
-      const newWidth = startWidth + (moveEvent.clientX - startX);
-      if (newWidth > 100 && newWidth < window.innerWidth * 0.8) {
-        resizableRef.current.style.width = `${newWidth}px`;
+        if (result.data && result.data.length > 0) {
+          let HeaderList = Object.keys(result.data[0]);
+          const headers = HeaderList.map((item) => ({
+            HeaderKey: item,
+            defaultWidth: item.length > 20 ? `${item.length * 15}` : "253.5",
+            HeaderIcon: itemIcons[item],
+            HeaderName: ItemsHeaderName[item]
+          }));
+          setHeaderFormat(headers);
+          setLoading(false);
+        }
+      } 
+      catch (error) {
+        console.error("API call failed:", error);
+        setLoading(false);
       }
     };
-
-    const onMouseUp = () => {
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-    };
-
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
-  };
+    fetchData();
+  }, []);
 
   return (
-    <Container>
-      <ResizableDiv ref={resizableRef}>
-        Resizable Content
-        <Resizer onMouseDown={handleMouseDown} />
-      </ResizableDiv>
-      <div style={{ flex: 1, padding: '20px' }}>Main Content</div>
-    </Container>
+    <>
+      <h2>Item Page</h2>
+      {loading ? <p>Loading data...</p> : <SdkTable TableHeader={HeaderFormat} TableData={ItemData} />}
+    </>
   );
 }

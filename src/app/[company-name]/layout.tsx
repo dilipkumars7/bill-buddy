@@ -22,7 +22,7 @@ export default function RootLayout({
       <>
         <SdkNavbar/>
         <SdkSidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} setIsHovered={setIsHovered} isHovered={isHovered}/>
-        <section className={`${SKDsFontAp.className} hero_section`} style={{ left: isCollapsed ? "2rem" : "240px", width: `calc(100% - ${isCollapsed ? "5rem" : "250px"})` }}>
+        <section className={`${SKDsFontAp.className} hero_section`} style={{ left: isCollapsed ? "2rem" : "240px", width: `calc(100% - ${isCollapsed ? "2.5rem" : "250px"})` }}>
           {children}
         </section>
       </>
