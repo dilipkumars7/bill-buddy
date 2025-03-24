@@ -9,8 +9,30 @@
   --sdk-space-200: 1rem;
   --sdk-space-250: 1.25rem;
   --sdk-space-300: 1.5rem;
+
+  --primary-color: #191919;
+  --primary: #408CF9;
+  --white: #FFFFFF;
+  --sidebar-hover: #F5F5F5;
+  --sidebar-bg: #FFFFFF;
+  --bg: #EFEFEF;
+  --text-link: #141B34;
+  --expand-button: #408CF9;
+  --logout: #FA7575;
+  --headline-text: #546471;
+  --text: #141B34;
+  --divider-bg: var(--bg);
+  --shadow-color: #E9E6E4;
+  --shadow: 0px 0px 0px 1.4px var(--shadow-color),
+    0px 0px 2.8px 0px var(--shadow-color);
 }
 
+@font-face {
+  font-family: "LexEnd";
+  src: url('../../public/fonts/LexendDeca-VariableFont_wght.ttf') format('opentype');
+  font-display: swap;
+  font-weight: 400;
+}
 
 .nav-header{
   border-block-end: 1px solid var(--sdk-border, #EBECF0);
