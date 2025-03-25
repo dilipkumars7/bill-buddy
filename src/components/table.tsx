@@ -61,7 +61,7 @@ const AddColumn = styled.div`
     justify-content: center;
 `
 
-const Cell = styled.div<{ isHovered?: boolean }>`
+const Cell = styled.div<{ isResizerHovered?: boolean }>`
   position: relative;
   padding: 10px;
   border-left: 1px solid #091E4224;
@@ -70,10 +70,10 @@ const Cell = styled.div<{ isHovered?: boolean }>`
   white-space: nowrap;
   min-width: 150px;
   text-align: center;
-  border-right: ${(props) => (props.isHovered ? "2px solid #408CF9" : "")};
+  border-right: ${(props) => (props.isResizerHovered ? "2px solid #408CF9" : "")};
 `;
 
-const HeaderCell = styled.div<{ isHovered?: boolean }>`
+const HeaderCell = styled.div`
   position: relative;
   padding: 10px;
   border-left: 1px solid #091E4224;
@@ -81,7 +81,6 @@ const HeaderCell = styled.div<{ isHovered?: boolean }>`
   overflow: hidden;
   white-space: nowrap;
   min-width: 150px;
-  border-right: ${(props) => (props.isHovered ? "2px solid #408CF9" : "")};
   display:flex;
   justify-content: left;
   align-items: center;
@@ -105,6 +104,19 @@ const Resizer = styled.div`
   }
 `;
 
+const DropDownSort = styled.div`
+  position: absolute;
+  right: 10px;
+  top: 0;
+  bottom: 0;
+  width: 15px;
+  cursor: pointer;
+  background-color: transparent;
+  z-index: 1;
+  user-select: none;
+  background-color: #408CF9;
+`;
+
 interface TableProps {
   TableHeader: { HeaderKey: string; defaultWidth: string, HeaderIcon: JSX.Element, HeaderName: string }[];
   TableData: { [key: string]: any }[];
@@ -116,12 +128,13 @@ export default function SdkTable({ TableHeader, TableData }: TableProps) {
   );
   const [columnWidths, setColumnWidths] = useState(columnWidthsRef.current);
   const [totalTableWidth, setTotalTableWidth] = useState(
-    columnWidthsRef.current.reduce((acc, w) => acc + w, 0)
+    columnWidthsRef.current.reduce((acc, w) => acc + w, 20)
   );
   const resizingIndex = useRef<number | null>(null);
   const resizeOffset = useRef(0);
   const [isScrolled, setIsScrolled] = useState(false);
   const [hoveredColumn, setHoveredColumn] = useState<number | null>(null);
+  const [hoveredResizer, setHoveredResizer] = useState<number | null>(null);
 
   const scrollableBodyRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -156,7 +169,7 @@ export default function SdkTable({ TableHeader, TableData }: TableProps) {
       newWidths[resizingIndex.current] = newWidth;
       columnWidthsRef.current = newWidths;
       setColumnWidths(newWidths);
-      setTotalTableWidth(newWidths.reduce((acc, w) => acc + w, 0));
+      setTotalTableWidth(newWidths.reduce((acc, w) => acc + w, 20));
 
       resizeOffset.current = event.clientX;
     });
@@ -181,10 +194,17 @@ export default function SdkTable({ TableHeader, TableData }: TableProps) {
         {/* Header Row */}
         <HeaderRow ref={headerRef} isScrolled={isScrolled}>
           {TableHeader.map((item, index) => (
-            <HeaderCell key={index} style={{ width: `${columnWidths[index]}px`}}>
+            <HeaderCell key={index} style={{ width: `${columnWidths[index]}px`}} onMouseEnter={() => setHoveredColumn(index)} onMouseLeave={() => setHoveredColumn(null)}>
               {item.HeaderIcon}
               <div>{item.HeaderName}</div>
-              <Resizer onMouseDown={(event) => handleMouseDown(index, event)} onMouseEnter={() => setHoveredColumn(index)} onMouseLeave={() => setHoveredColumn(null)}/>
+              {/* <div id="sort-icon">I</div> */}
+              <Resizer onMouseDown={(event) => handleMouseDown(index, event)} onMouseEnter={() => setHoveredResizer(index)} onMouseLeave={() => setHoveredResizer(null)}  />
+              {hoveredColumn === index && (
+              <>
+                <div id="sort-icon">I</div>
+                <DropDownSort />
+              </>
+            )}
             </HeaderCell>
           ))}
         </HeaderRow>
@@ -197,7 +217,7 @@ export default function SdkTable({ TableHeader, TableData }: TableProps) {
           {TableData.map((item, rowIndex) => (
             <Row key={rowIndex}>
               {TableHeader.map((header, colIndex) => (
-                <Cell key={colIndex} style={{ width: `${columnWidths[colIndex]}px` }} isHovered={hoveredColumn === colIndex}>
+                <Cell key={colIndex} style={{ width: `${columnWidths[colIndex]}px` }} isResizerHovered={hoveredResizer === colIndex}>
                   {item[header.HeaderKey]}
                 </Cell>
               ))}
