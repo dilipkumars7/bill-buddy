@@ -2,6 +2,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "@emotion/styled";
 import { AddCircle } from 'iconsax-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+
 
 const TableContainer = styled.div`
   width: 100%;
@@ -109,13 +119,38 @@ const DropDownSort = styled.div`
   right: 10px;
   top: 0;
   bottom: 0;
-  width: 15px;
+  width: 25px;
+  height: 100%;
   cursor: pointer;
   background-color: transparent;
   z-index: 1;
   user-select: none;
-  background-color: #408CF9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
+
+function DropdownMenuRadioGroupDemo() {
+  const [position, setPosition] = React.useState("bottom");
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button className="p-1 rounded bg-blue-500 text-white">▼</button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56">
+        <DropdownMenuLabel>Sort Postion</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuRadioGroup value={position} onValueChange={setPosition}>
+          <DropdownMenuRadioItem value="top">Sort A  Z</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="bottom">Sort Z  A</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="right">Clear Sort</DropdownMenuRadioItem>
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
 
 interface TableProps {
   TableHeader: { HeaderKey: string; defaultWidth: string, HeaderIcon: JSX.Element, HeaderName: string }[];
@@ -202,9 +237,11 @@ export default function SdkTable({ TableHeader, TableData }: TableProps) {
               {hoveredColumn === index && (
               <>
                 <div id="sort-icon">I</div>
-                <DropDownSort />
               </>
             )}
+             <DropDownSort style={{ visibility: hoveredColumn === index ? "visible" : "hidden" }}>
+              <DropdownMenuRadioGroupDemo key={index} />
+            </DropDownSort>
             </HeaderCell>
           ))}
         </HeaderRow>
